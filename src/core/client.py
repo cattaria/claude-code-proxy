@@ -9,7 +9,7 @@ from openai._exceptions import APIError, RateLimitError, AuthenticationError, Ba
 class OpenAIClient:
     """Async OpenAI client with cancellation support."""
     
-    def __init__(self, api_key: str, base_url: str, timeout: int = 90):
+    def __init__(self, api_key: str, base_url: str, timeout: int = 90, api_version: Optional[str] = None):
         self.api_key = api_key
         self.base_url = base_url
         self.client = AsyncAzureOpenAI(
