@@ -2,7 +2,7 @@ import asyncio
 import json
 from fastapi import HTTPException
 from typing import Optional, AsyncGenerator, Dict, Any
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, AsyncAzureOpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
 from openai._exceptions import APIError, RateLimitError, AuthenticationError, BadRequestError
 
@@ -12,7 +12,7 @@ class OpenAIClient:
     def __init__(self, api_key: str, base_url: str, timeout: int = 90):
         self.api_key = api_key
         self.base_url = base_url
-        self.client = AsyncOpenAI(
+        self.client = AsyncAzureOpenAI(
             api_key=api_key,
             base_url=base_url,
             timeout=timeout
