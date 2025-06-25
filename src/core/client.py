@@ -5,18 +5,33 @@ from typing import Optional, AsyncGenerator, Dict, Any
 from openai import AsyncOpenAI, AsyncAzureOpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
 from openai._exceptions import APIError, RateLimitError, AuthenticationError, BadRequestError
+from .config import config
 
 class OpenAIClient:
-    """Async OpenAI client with cancellation support."""
+    """Async OpenAI client with cancellation support.
+    
+    Supports both OpenAI and Azure OpenAI clients based on configuration.
+    """
     
     def __init__(self, api_key: str, base_url: str, timeout: int = 90, api_version: Optional[str] = None):
         self.api_key = api_key
         self.base_url = base_url
-        self.client = AsyncAzureOpenAI(
-            api_key=api_key,
-            base_url=base_url,
-            timeout=timeout
-        )
+        
+        # Choose client based on configuration
+        if config.client_type == "AZUREOPENAI":
+            self.client = AsyncAzureOpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                timeout=timeout,
+                api_version=api_version
+            )
+        else:  # Default to OpenAI
+            self.client = AsyncOpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                timeout=timeout
+            )
+        
         self.active_requests: Dict[str, asyncio.Event] = {}
     
     async def create_chat_completion(self, request: Dict[str, Any], request_id: Optional[str] = None) -> Dict[str, Any]:

@@ -23,6 +23,11 @@ class Config:
         self.big_model = os.environ.get("BIG_MODEL", "gpt-4o")
         self.small_model = os.environ.get("SMALL_MODEL", "gpt-4o-mini")
         
+        # Client type configuration
+        self.client_type = os.environ.get("CLIENT_TYPE", "OpenAI").upper()
+        if self.client_type not in ["OPENAI", "AZUREOPENAI"]:
+            raise ValueError(f"Invalid CLIENT_TYPE: {self.client_type}. Must be 'OpenAI' or 'AzureOpenAI'.")
+        
     def validate_api_key(self):
         """Basic API key validation"""
         if not self.openai_api_key:
